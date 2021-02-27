@@ -3,6 +3,7 @@ import os
 from flask_restful import Resource
 
 from dnsviz_api.app.database.DGraphConnection import DGraphConnection
+from dnsviz_api.app.errors import invalid_hostname_error
 
 TRUST_TREE_QUERY = '''
     query q($descriptor: string) {
@@ -44,4 +45,8 @@ class TrustTree(Resource):
             descriptor = f'{descriptor}.'
         DATABASE_URI=os.getenv('DATABASE_URI')
         with DGraphConnection(DATABASE_URI) as db:
-            return db.query(TRUST_TREE_QUERY, {'$descriptor':'google.com.'})
+            hostname_data = db.query(TRUST_TREE_QUERY, {'$descriptor':descriptor})
+            if len(hostname_data['q']) > 0:
+                return hostname_data
+            else:
+                return invalid_hostname_error()
