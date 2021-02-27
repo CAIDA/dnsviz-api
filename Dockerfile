@@ -12,6 +12,10 @@ COPY ./dnsviz_api/ /app/dnsviz_api
 
 RUN python3 setup.py develop
 
-ENTRYPOINT [ "python3" ]
+RUN pip3 install gunicorn[gevent]
 
-CMD [ "dnsviz_api/wsgi.py" ]
+EXPOSE 5000
+
+WORKDIR /app/dnsviz_api
+
+CMD gunicorn --worker-class gevent --workers 8 --bind 0.0.0.0:5000 wsgi:app --max-requests 10000 --timeout 5 --keep-alive 5 --log-level info
