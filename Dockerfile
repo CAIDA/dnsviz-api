@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM python:3.8-buster
 
 RUN apt-get update -y && \
     apt-get install -y python3-pip python3-dev

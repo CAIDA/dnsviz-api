@@ -10,9 +10,9 @@ load_dotenv()
 if os.getenv('FLASK_ENV') == "development":
     app_config = config.DevelopmentConfig()
 else:
-    app_config = config.Config()
+    app_config = config.ProductionConfig()
 
 app = create_app(app_config)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))

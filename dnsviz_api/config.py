@@ -3,6 +3,7 @@ import os
 class Config:
     DEBUG=False
     TESTING=False
+    USE_TALISMAN=True
 
     def __repr__(self):
         config_str = "-- Application Config --"
@@ -14,3 +15,9 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG=True
+    USE_TALISMAN=False
+    APP_MODE="development"
+
+
+class ProductionConfig(Config):
+    APP_MODE="production"

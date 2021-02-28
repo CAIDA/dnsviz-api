@@ -10,3 +10,10 @@ run:
 
 stop:
 	docker container ls | grep dnsviz-api | awk '{print $$1;}' | xargs docker container stop
+
+freeze:
+	pip3 freeze --exclude-editable > requirements.txt
+
+deploy:
+	docker build -t gcr.io/dnsviz-api/dnsviz-api:latest .
+	docker push gcr.io/dnsviz-api/dnsviz-api:latest
