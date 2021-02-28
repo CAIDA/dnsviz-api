@@ -10,16 +10,21 @@ TRUST_TREE_QUERY = '''
         var(func: eq(descriptor, $descriptor)) @recurse{
             p as authNsParent
             c as authNsChild
+            ip as ip4_glue
             pr as parentDomain
         }
         var(func: eq(descriptor, $descriptor)){
             id as uid
         }
-        q(func: uid(p, c, pr, id)){
+        var(func: uid(p, c)){
+            rp as ~authNsParent
+            rc as ~authNsChild
+        }
+        q(func: uid(p,c, pr, id, ip)){
             uid
             xid
             dgraph.type,
-            name: descriptor
+            descriptor
             authNsParent{
                 uid
             }
@@ -29,8 +34,24 @@ TRUST_TREE_QUERY = '''
             parentDomain{
                 uid
             }
+            ip4_glue{
+                uid
+            }
+        }
+        borders(func: uid(rp, rc)){
+            uid
+            xid
+            dgraph.type,
+            descriptor
+            authNsParent{
+                uid
+            }
+            authNsChild{
+                uid
+            }
         }
     }
+
 '''
 
 
