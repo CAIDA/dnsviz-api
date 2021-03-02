@@ -1,7 +1,4 @@
-FROM python:3.8-buster
-
-RUN apt-get update -y && \
-    apt-get install -y python3-pip python3-dev
+FROM python:3.8-slim
 
 COPY ./requirements.txt /app/requirements.txt
 COPY ./setup.py /app/setup.py
@@ -10,9 +7,7 @@ WORKDIR /app
 
 COPY ./dnsviz_api/ /app/dnsviz_api
 
-RUN python3 setup.py develop
-
-RUN pip3 install gunicorn[gevent]
+RUN pip3 install --no-cache-dir -e .
 
 EXPOSE 5000
 

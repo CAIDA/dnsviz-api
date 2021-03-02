@@ -1,6 +1,6 @@
 .PHONY: build run stop all
 
-all: build run
+all: stop build run
 
 build:
 	docker build -t dnsviz-api:latest .

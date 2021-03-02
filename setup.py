@@ -1,7 +1,7 @@
 import setuptools
 
 with open('requirements.txt', 'r') as requirements_file:
-    requirements = requirements_file.readlines()
+    requirements = [r for r in requirements_file.readlines() if not r.startswith('NEURON')]
 
 setuptools.setup(
     name="dnsviz_api",
