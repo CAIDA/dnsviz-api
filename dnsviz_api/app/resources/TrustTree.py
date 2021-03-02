@@ -61,6 +61,8 @@ class TrustTree(Resource):
     '''
     def get(self, hostname):
         # Format hostname to lowercase with trailing period
+        current_app.logger.info(f"Received request for TrustTree endpoint")
+        current_app.logger.info(f"TrustTree query: '{hostname}'")
         descriptor = hostname.lower()
         if descriptor[-1] != '.':
             descriptor = f'{descriptor}.'
