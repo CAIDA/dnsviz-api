@@ -4,6 +4,8 @@ class Config:
     DEBUG=False
     TESTING=False
     USE_TALISMAN=True
+    def __init__(self):
+        self.DATABASE_URI = os.getenv('DATABASE_URI')
 
     def __repr__(self):
         config_str = "-- Application Config --"

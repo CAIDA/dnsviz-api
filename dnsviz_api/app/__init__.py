@@ -1,11 +1,12 @@
 import sys
 
 from flask import Flask, Blueprint
-from flask_cors import CORS
-from flask_talisman import Talisman
 from flask_restful import Api
 
+from dnsviz_api.app.resources.Routes import Routes
 from dnsviz_api.app.resources.TrustTree import TrustTree
+
+from dnsviz_api.app.extensions import cors, talisman, db
 
 def create_app(app_config:'Config' = None) -> Flask:
     '''Flask application factory
@@ -17,10 +18,11 @@ def create_app(app_config:'Config' = None) -> Flask:
         Configured Flask app
 
     '''
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder=None)
 
     # Enable CORS
-    CORS(app)
+    cors.init_app(app)
+    db.init_app(app)
 
     if app_config is not None:
         app.config.from_object(app_config)
@@ -28,16 +30,21 @@ def create_app(app_config:'Config' = None) -> Flask:
     with app.app_context():
         # Set security headers for production
         if app.config['USE_TALISMAN']:
-            Talisman(app)
+            talisman.init_app(app)
 
         api_bp = Blueprint('api_bp', __name__)
         api = Api(api_bp)
 
-        api.add_resource(TrustTree, '/trust-tree', '/trust-tree/<string:hostname>')
+        register_resources(api)
 
         app.register_blueprint(api_bp)
 
         return app
+
+def register_resources(api):
+    api.add_resource(Routes, '/', endpoint='routes')
+    api.add_resource(TrustTree, '/trust-tree/<string:hostname>', endpoint='trust-tree')
+
 
 
 
