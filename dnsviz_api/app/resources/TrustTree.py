@@ -1,5 +1,6 @@
 import os
 
+from flask import current_app
 from flask_restful import Resource
 
 from dnsviz_api.app.errors import invalid_hostname_error
@@ -10,8 +11,9 @@ TRUST_TREE_QUERY = '''
         var(func: eq(descriptor, $descriptor)) @recurse{
             p as authNsParent
             c as authNsChild
-            ip as ip4_glue
-            pr as parentDomain
+            ip4 as ip4_glue
+            ip6 as ip6_glue
+            pd as parentDomain
         }
         var(func: eq(descriptor, $descriptor)){
             id as uid
@@ -20,21 +22,10 @@ TRUST_TREE_QUERY = '''
             rp as ~authNsParent
             rc as ~authNsChild
         }
-        q(func: uid(p,c, pr, id, ip)){
+        q(func: uid(p,c, pd, id, ip4, ip6)){
             uid
-            xid
-            dgraph.type,
-            descriptor
-            authNsParent{
-                uid
-            }
-            authNsChild{
-                uid
-            }
-            parentDomain{
-                uid
-            }
-            ip4_glue{
+            dgraph.type
+            expand(_all_){
                 uid
             }
         }
@@ -43,6 +34,7 @@ TRUST_TREE_QUERY = '''
             xid
             dgraph.type,
             descriptor
+            isMapped
             authNsParent{
                 uid
             }
@@ -51,7 +43,6 @@ TRUST_TREE_QUERY = '''
             }
         }
     }
-
 '''
 
 
